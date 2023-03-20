@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txt_stt"
+            android:layout_width="@dimen/STT"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/STT"
+
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/nomarlText"
+            ></TextView>
+
+        <TextView
+
+            android:id="@+id/txt_requester"
+            android:layout_width="@dimen/Provider"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="4"
+            android:text="@string/Requester"
+            android:textAlignment="center"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/nomarlText"
+            ></TextView>
+
+
+
+
+
+        <TextView
+            android:id="@+id/txt_type"
+            android:layout_width="@dimen/ProvidingDate"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/Type"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/nomarlText"
+            ></TextView>
+
+        <Button
+            android:textAllCaps="false"
+            android:background="@drawable/layout_rounded_border"
+            android:id="@+id/txt_status"
+            android:layout_width="@dimen/Type"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/Status"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            ></Button>
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/deleteBtn"
+                android:layout_width="@dimen/showBtn"
+                android:layout_height="@dimen/showBtn"
+                android:src="@drawable/deletetrash"></ImageView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
