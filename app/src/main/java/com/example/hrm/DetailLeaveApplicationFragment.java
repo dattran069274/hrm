@@ -109,14 +109,21 @@ public class DetailLeaveApplicationFragment extends Fragment {
 
     private void updateButton() {
         if(this.type.equals(Common.STATUS_APPROVED)){
+            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_green));
+            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_success_bold));
             binding.txtStatus.setText(Common.STATUS_APPROVED);
             binding.btnCancle.setVisibility(View.GONE);
             binding.btnApprove.setVisibility(View.GONE);
         }
         else if(this.type.equals(Common.STATUS_CANCLED)){
+            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_red));
+            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_failed_bold));
             binding.txtStatus.setText(Common.STATUS_CANCLED);
             binding.btnCancle.setVisibility(View.GONE);
             binding.btnApprove.setVisibility(View.GONE);
+        } else if(this.type.equals(Common.STATUS_PENDING)){
+            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_yellow));
+            binding.txtStatus.setTextColor(getContext().getColor(R.color.pending));
         }
 
     }

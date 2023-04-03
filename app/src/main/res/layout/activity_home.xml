@@ -45,7 +45,7 @@
 
             android:layout_width="match_parent"
 
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent" >
         </FrameLayout>
 
     </LinearLayout>
@@ -57,16 +57,17 @@
     <!-- Note that `android:layout_gravity` needs to be set to 'start' -->
 
     <com.google.android.material.navigation.NavigationView
+        app:iconTint="@color/white"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
 
         android:id="@+id/nvView"
-
+        android:background="@color/gray_bold"
         android:layout_width="wrap_content"
 
         android:layout_height="match_parent"
 
         android:layout_gravity="start"
-
-        android:background="@android:color/white"
 
         app:menu="@menu/drawer_view" />
 

@@ -2,6 +2,7 @@ package com.example.hrm.Adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hrm.Constant;
 import com.example.hrm.HomeActivity;
+import com.example.hrm.NewEmployeeFragment;
 import com.example.hrm.R;
 import com.example.hrm.Response.Attributes;
 import com.example.hrm.Response.Datum;
 import com.example.hrm.Response.DatumStaff;
 import com.example.hrm.Response.StaffAttributes;
+import com.example.hrm.StaffFragment;
+import com.example.hrm.StaffFragmentView;
 import com.example.hrm.StaffInfoFragment;
 import com.example.hrm.databinding.DepartmentItemBinding;
 import com.example.hrm.databinding.StaffItemBinding;
@@ -32,11 +36,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.StaffViewHolde
     private LayoutInflater layoutInflater;
     Context mContext;
     String type;
-    HomeActivity homeActivity;
+    HomeActivity homeActivity; StaffFragmentView view;
     private boolean isShowCurrentList=false;
     private List<DatumStaff> currentList;
     private String showLikeKey;
-    public void setData(List<DatumStaff> desDepartments, Context mContext,HomeActivity homeActivity){
+
+    public UserAdapter(StaffFragmentView view) {
+        this.view = view;
+    }
+
+    public UserAdapter() {
+    }
+
+    public void setData(List<DatumStaff> desDepartments, Context mContext, HomeActivity homeActivity){
         this.homeActivity=homeActivity;
         this.type=type;
         this.data=desDepartments;
@@ -80,12 +92,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.StaffViewHolde
             }
         });
         holder.staffItemBinding.txtIndex.setText(String.valueOf(att.getId()));
-//        holder.staffItemBinding.btnEdit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showEditForm(att);
-//            }
-//        });
+        holder.staffItemBinding.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditForm(att);
+            }
+        });
 //        holder.staffItemBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -96,7 +108,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.StaffViewHolde
 
     private void showInfo(StaffAttributes att) {
         //Toast.makeText(mContext, "showInfo", Toast.LENGTH_SHORT).show();
+        homeActivity.addOrRemoveBackButton(true);
         StaffInfoFragment staffInfoFragment=new StaffInfoFragment(att);
+        final Bundle args = new Bundle();
+        args.putString("TAG", staffInfoFragment.MY_TAG);
+        staffInfoFragment.setArguments(args);
         homeActivity.relaceFragment(staffInfoFragment);
     }
 
@@ -125,37 +141,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.StaffViewHolde
         alertDialog.show();
     }
 
-    private void showEditForm(Attributes department) {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.test_dialog, null);
-        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-        alertDialog.setTitle("Update Department");
-        alertDialog.setIcon(R.drawable.edit);
-        alertDialog.setCancelable(true);
-//        alertDialog.setMessage("Your Message Here");
-
-
-        final EditText edt_name = (EditText) view.findViewById(R.id.edt_name);
-        edt_name.setText(department.getName());
-        final EditText edt_des = (EditText) view.findViewById(R.id.edt_des);
-        edt_des.setText(department.getDescription());
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alertDialog.dismiss();
-            }
-        });
-
-
-        alertDialog.setView(view);
-        alertDialog.show();
+    private void showEditForm(StaffAttributes staff) {
+        view.showFormAddDepartment(staff);
     }
 
     @Override

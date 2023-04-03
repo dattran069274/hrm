@@ -4,9 +4,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,13 +20,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.hrm.Model.PropertyWithPosAttributes;
+import com.example.hrm.Response.Attributes;
 import com.example.hrm.Response.DataResponseList;
 import com.example.hrm.Response.DatumTemplate;
+import com.example.hrm.ViewModel.PropertyShareViewModel;
+import com.example.hrm.ViewModel.StaffShareViewModel;
 import com.example.hrm.databinding.AssignPropertyDialogBinding;
 import com.example.hrm.databinding.FragmentDetailPropertyBinding;
 import com.example.hrm.Response.PropertyAttributes;
 import com.example.hrm.Response.StaffAttributes;
 import com.example.hrm.Services.APIService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +69,9 @@ public class DetailPropertyFragment extends Fragment {
         // Required empty public constructor
     }
     PropertyAttributes attributes;
-    public DetailPropertyFragment(PropertyAttributes att) {
+    int pos;
+    public DetailPropertyFragment(PropertyAttributes att, int pos) {
+    this.pos=pos;
     this.attributes=att;
     }
 
@@ -93,19 +106,9 @@ public class DetailPropertyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        staffShareViewModel = new ViewModelProvider(getActivity()).get(PropertyShareViewModel.class);
         binding=FragmentDetailPropertyBinding.inflate(inflater);
-        if(attributes.getStatus().equals(Common.STATUS_USED)){
-            binding.btnAssign.setVisibility(View.GONE);
-            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_red));
-            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_failed_bold));
-        } else {
-            binding.btnRecall.setVisibility(View.GONE);
-            //GradientDrawable myGrad = (GradientDrawable)binding.txtStatus.getBackground();
-            //myGrad.setStroke(Common.convertDpToPx(3), getContext().getColor(R.color.toast_success_bold));
-            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_green));
-            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_success_bold));
-        }
+        initButton(false);
         binding.txtStatus.setText(attributes.getStatus());
         binding.txtName.setText(attributes.getName());
         binding.txtBrand.setText(attributes.getBrand());
@@ -120,8 +123,57 @@ public class DetailPropertyFragment extends Fragment {
                 showAssignDialog(view);
             }
         });
+        binding.btnRecall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recall();
+            }
+        });
         return binding.getRoot();
     }
+
+    private void recall() {
+        try {
+            Call<JsonObject> call = APIService.getService().responsePropertyRequest(Common.getToken(), attributes.getId());
+            Response<JsonObject> res = call.execute();
+
+            if(res.isSuccessful()){
+                Gson gson= (new GsonBuilder()).setPrettyPrinting().create();
+                JsonParser parser = new JsonParser();
+                JsonObject object = (JsonObject) parser.parse(res.body().toString());// response will be the json String
+                DatumTemplate<PropertyAttributes> emp = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<PropertyAttributes>>() {}.getType());
+                PropertyAttributes propertyAttributes=emp.getAttributes();
+                attributes=propertyAttributes;
+                initButton(true);
+                PropertyWithPosAttributes propertyWithPosAttributes=new PropertyWithPosAttributes(attributes,pos);
+                staffShareViewModel.setProperty(propertyWithPosAttributes);
+                ((HomeActivity)getActivity()).showToast(true,"Recall Property Success!");
+            }
+            else {
+                staffShareViewModel.setProperty(null);
+                ((HomeActivity)getActivity()).showToast(false,"Recall Property Failed!");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initButton(boolean isPutExtra) {
+        if(attributes.getStatus().equals(Common.STATUS_USED)){
+            binding.btnRecall.setVisibility(View.VISIBLE);
+            binding.txtStatus.setText(attributes.getStatus());
+            binding.btnAssign.setVisibility(View.GONE);
+            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_red));
+            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_failed_bold));
+        } else {
+            binding.btnAssign.setVisibility(View.VISIBLE);
+            binding.txtStatus.setText(attributes.getStatus());
+            binding.btnRecall.setVisibility(View.GONE);
+            binding.txtStatus.setBackground(getContext().getDrawable(R.drawable.layout_rounded_border_green));
+            binding.txtStatus.setTextColor(getContext().getColor(R.color.toast_success_bold));
+        }
+    }
+    private PropertyShareViewModel staffShareViewModel;
     List<StaffAttributes> staff;
     ArrayList<String> staffNames=new ArrayList<>();
     interface  Ido{
@@ -169,7 +221,7 @@ public class DetailPropertyFragment extends Fragment {
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                staffId=i;
+                staffId=staff.get(i).getId();
             }
         });
         txtSubmit.setOnClickListener(new View.OnClickListener() {
@@ -185,34 +237,26 @@ public class DetailPropertyFragment extends Fragment {
                         try {
                             data.put("receiver_id", String.valueOf(staffId));
                             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), data.toString());
-                            Call<ResponseBody> call = APIService.getService().responsePropertyRequest(Common.getToken(), attributes.getId(), body);
-                            Response<ResponseBody> res = call.execute();
-                            View toast=null;
+                            Call<JsonObject> call = APIService.getService().responsePropertyRequest(Common.getToken(), attributes.getId(), body);
+                            Response<JsonObject> res = call.execute();
+                            alertDialog.dismiss();
+
                             if(res.isSuccessful()){
-                                //data change
-                                alertDialog.dismiss();
-                                toast=getLayoutInflater().inflate(R.layout.toast_success,null);
+                                Gson gson= (new GsonBuilder()).setPrettyPrinting().create();
+                                JsonParser parser = new JsonParser();
+                                JsonObject object = (JsonObject) parser.parse(res.body().toString());// response will be the json String
+                                DatumTemplate<PropertyAttributes> emp = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<PropertyAttributes>>() {}.getType());
+                                PropertyAttributes propertyAttributes=emp.getAttributes();
+                                attributes=propertyAttributes;
+                                initButton(true);
+                                PropertyWithPosAttributes propertyWithPosAttributes=new PropertyWithPosAttributes(attributes,pos);
+                                staffShareViewModel.setProperty(propertyWithPosAttributes);
+                                ((HomeActivity)getActivity()).showToast(true,"Assign Property Success!");
                             }
                             else {
-                                toast=getLayoutInflater().inflate(R.layout.toast_failed,null);
+                                staffShareViewModel.setProperty(null);
+                                ((HomeActivity)getActivity()).showToast(false,"Assign Property Failed!");
                             }
-
-                            toast.setLayoutParams(new RelativeLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                            ));
-                            toast.setId(Integer.parseInt("06901"));
-                            RelativeLayout.LayoutParams layoutParams= (RelativeLayout.LayoutParams) toast.getLayoutParams();
-                            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            binding.relativeMain.addView(toast);
-                            Handler handler=new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.relativeMain.removeView(binding.getRoot().findViewById(Integer.parseInt("06901")));
-                                }
-                            },2000);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         } catch (IOException e) {

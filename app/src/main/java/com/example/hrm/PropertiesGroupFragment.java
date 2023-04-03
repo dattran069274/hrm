@@ -188,6 +188,7 @@ public class PropertiesGroupFragment extends Fragment {
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.add_department_dialog, null);
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Add Property Group");
+        ((TextView)view.findViewById(R.id.txt_header)).setText("Property Name");
         alertDialog.setIcon(R.drawable.add);
         alertDialog.setCancelable(true);
 //        alertDialog.setMessage("Your Message Here");
@@ -258,7 +259,7 @@ public class PropertiesGroupFragment extends Fragment {
                                 departmentAdapter.notifyItemInserted(desDepartments.size()-1);
                                 Log.d("eeeeeeee",emp.toString());
                                 alertDialog.dismiss();
-                                Toast.makeText(getContext(), "Add department success!", Toast.LENGTH_SHORT).show();
+                                ((HomeActivity)getActivity()).showToast(true,"Create Group Property Success!");
                             }
                             else {
                                 Log.d("RETROFIT_ERROR :", String.valueOf(res.code()));
@@ -267,10 +268,13 @@ public class PropertiesGroupFragment extends Fragment {
                                 JSONArray jsonArray=jsonObject.getJSONArray("errors");
                                 Log.d("RETROFIT_ERROR_detail :", String.valueOf(jsonArray.getJSONObject(0).get("detail")));
                                 Toast.makeText(getContext(), String.valueOf(jsonArray.getJSONObject(0).get("detail")), Toast.LENGTH_SHORT).show();
+                                ((HomeActivity)getActivity()).showToast(true,"Create Group Property Failed!");
                             }
                         } catch (IOException e) {
+                            ((HomeActivity)getActivity()).showToast(true,"Create Group Property Failed!");
                             throw new RuntimeException(e);
                         } catch (JSONException e) {
+                            ((HomeActivity)getActivity()).showToast(true,"Create Group Property Failed!");
                             throw new RuntimeException(e);
                         }
                     }

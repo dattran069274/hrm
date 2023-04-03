@@ -18,8 +18,10 @@ import retrofit2.Response;
 
 public class Common {
     public static final String STATUS_USED = "used";
+    public static final String STATUS_AVAILABLE = "available";
     public static final String STATUS_PROVIDED = "provided";
     public static final String STATUS_RECALLED = "recall";
+    public static final String MANAGER ="Manager" ;
 
     public  static  String EMAIL_KEY="EMAIL";
     public  static  String PASSWORD_KEY="PASSWORD";

@@ -20,6 +20,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/nomarlText"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:text="1"
@@ -53,15 +55,18 @@
                     android:textColor="@color/black"
                     android:text="Status: "
                     android:textSize="@dimen/nomarlText"></TextView>
-                <Button
+                <TextView
+                    android:textAlignment="center"
+                    android:padding="@dimen/statusPadding"
+                    android:textSize="@dimen/miniText"
                     android:layout_weight="6"
                     android:id="@+id/txt_status"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/teal_200"
                     android:text="@string/pending"
-                    android:background="@drawable/layout_rounded_border"
+                    android:background="@drawable/layout_rounded_border_green"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"></Button>
+                    android:layout_height="wrap_content"></TextView>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -91,6 +96,7 @@
                     android:text=":"
                     android:textSize="@dimen/nomarlText"></TextView>
                 <TextView
+                    android:textStyle="italic"
                     android:id="@+id/txt_start_date"
                     android:textSize="@dimen/nomarlText"
                     android:textColor="@color/black"
@@ -122,6 +128,7 @@
                     android:text=":"
                     android:textSize="@dimen/nomarlText"></TextView>
                 <TextView
+                    android:textStyle="italic"
                     android:id="@+id/txt_end_date"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"

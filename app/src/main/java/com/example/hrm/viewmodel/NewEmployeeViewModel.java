@@ -7,23 +7,24 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
 import com.example.hrm.BR;
+import com.example.hrm.Response.StaffAttributes;
 
 public class NewEmployeeViewModel extends BaseObservable {
     public static final int fullNameType=0,passwordType=1,emailType=2,confirmPasswordType=3,phoneType=4,dateOfBirthType=5,joinDateType=6,genderType=7,departmentType=8;
     public static final int positionType=9,jobtitleType=10,managerType=11,addressType=12;
-    private String fullName;
-    private String password;
-    private String email;
-    private String confirmPassword;
-    private String phone;
-    private String dateOfBirth;
-    private String joinDate;
-    private String gender;
-    private String department;
-    private String position;
-    private String jobtitle;
-    private String manager;
-    private String address;
+    private String fullName="";
+    private String password="";
+    private String email="";
+    private String confirmPassword="";
+    private String phone="";
+    private String dateOfBirth="";
+    private String joinDate="";
+    private String gender="";
+    private String department="";
+    private String position="";
+    private String jobtitle="";
+    private String manager="";
+    private String address="";
     private boolean isFullNameVisible=false;
     private boolean isPasswordVisible=false;
     private boolean isEmailVisible=false;
@@ -37,6 +38,26 @@ public class NewEmployeeViewModel extends BaseObservable {
     private boolean isJobtitleVisible=false;
     private boolean isManagerVisible=false;
     private boolean isAddressVisible=false;
+
+    public NewEmployeeViewModel(StaffAttributes staff) {
+        if(staff!=null){
+            Log.d("staff",staff.toString());
+            setAddress(staff.getAddress());
+            //if(staff.getUpperLevel()!=null) setManager(staff.getUpperLevel().getFullname());
+            //setJobtitle(staff.getJobTitle()!=null?staff.getJobTitle().getTitle():"");
+            //setPosition(staff.getPosition()!=null?staff.getPosition().getName():"");
+            //setDepartment(staff.getDepartment().getName());
+            setGender(staff.getGender());
+            setDateOfBirth(staff.getDateOfBirth()!=null?staff.getDateOfBirth().toString():"");
+            setJoinDate(staff.getJoinDate()!=null?staff.getJoinDate().toString():"");
+            //setPassword(staff.get);
+           // setConfirmPassword();
+            setEmail(staff.getEmail());
+            setFullName(staff.getFullname());
+            setPhone(staff.getPhone());
+        }
+    }
+
     @Bindable
     public boolean isPasswordVisible() {
         return isPasswordVisible;
@@ -308,13 +329,26 @@ public class NewEmployeeViewModel extends BaseObservable {
         isFullNameVisible = fullNameVisible;
         notifyPropertyChanged(BR.fullNameVisible);
     }
-
+    @Bindable
     public boolean isSubmited() {
         return isSubmited;
     }
 
     public void setSubmited(boolean submited) {
         isSubmited = submited;
+        check(fullNameType);
+        check(emailType);
+        check(passwordType);
+        check(confirmPasswordType);
+        check(phoneType);
+        check(dateOfBirthType);
+        check(joinDateType);
+        check(genderType);
+        check(departmentType);
+        check(positionType);
+        check(jobtitleType);
+        check(managerType);
+        check(addressType);
     }
 
     public void check(int type){
@@ -349,5 +383,20 @@ public class NewEmployeeViewModel extends BaseObservable {
                 if(TextUtils.isEmpty(this.address)) setAddressVisible(true); else setAddressVisible(false);break;
         }
 
+    }
+
+    public boolean checkAll() {
+        boolean check=true;
+        if(isFullNameVisible||isEmailVisible||isPhoneVisisble||isDateOfBirthVisible||isJoinDateVisible||isGenderVisible||isDepartmentVisible||isPositionVisible||isJobtitleVisible||isManagerVisible||isAddressVisible){
+            check=false;
+        }
+        if((isPasswordVisible||isConfirmPasswordVisible)&&isCheckPassword){
+            check=false;
+        }
+        return check;
+    }
+    private boolean isCheckPassword=true;
+    public void setCheckPassword(boolean b) {
+        isCheckPassword=b;
     }
 }

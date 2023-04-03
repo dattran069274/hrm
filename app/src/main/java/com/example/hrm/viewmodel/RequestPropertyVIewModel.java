@@ -19,6 +19,16 @@ import javax.annotation.Generated;
 
 @Generated("jsonschema2pojo")
 public class RequestPropertyVIewModel extends BaseObservable {
+    boolean isSubmitted=false;
+    @Bindable
+    public boolean isSubmitted() {
+        return isSubmitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        isSubmitted = submitted;
+        notifyPropertyChanged(BR.submitted);
+    }
 
     @SerializedName("id")
     @Expose

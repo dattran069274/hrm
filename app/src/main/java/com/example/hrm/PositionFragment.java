@@ -128,6 +128,7 @@ public class PositionFragment extends Fragment {
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.add_department_dialog, null);
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Add Position");
+        ((TextView)view.findViewById(R.id.txt_header)).setText("Position Name");
         alertDialog.setIcon(R.drawable.add);
         alertDialog.setCancelable(true);
 //        alertDialog.setMessage("Your Message Here");
@@ -192,8 +193,8 @@ public class PositionFragment extends Fragment {
                                 Log.d("eeeeeeeestr",res.body().toString());
                                 DatumTemplate<Attributes> emp = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<Attributes>>() {}.getType());
                                 Attributes department=emp.getAttributes();
-                                desDepartments.add(department);
-                                departmentAdapter.notifyItemInserted(desDepartments.size()-1);
+                                desDepartments.add(0,department);
+                                departmentAdapter.notifyDataSetChanged();
                                 Log.d("eeeeeeee",emp.toString());
                                 alertDialog.dismiss();
                                 //Toast.makeText(getContext(), "Add department success!", Toast.LENGTH_SHORT).show();

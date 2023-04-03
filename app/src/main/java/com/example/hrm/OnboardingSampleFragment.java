@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,11 @@ import com.example.hrm.Response.Position;
 import com.example.hrm.Services.APIService;
 import com.example.hrm.databinding.FragmentOnboardingManagementBinding;
 import com.example.hrm.viewmodel.AddOnboardingTaskViewModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,8 +159,8 @@ public class OnboardingSampleFragment extends Fragment {
         //init dropdown option
         leaveAdapter.setIOnClick(new IOnClick() {
             @Override
-            public void showDialog(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes, View view) {
-                showDialogMain(onboardingSampleStepAtrributes,view);
+            public void showDialog(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes, View view,int pos) {
+                showDialogMain(onboardingSampleStepAtrributes,view,pos);
             }
 
             @Override
@@ -198,7 +204,7 @@ public class OnboardingSampleFragment extends Fragment {
         fragmentLeaveApplicationBinding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialogMain(null,view);
+                showDialogMain(null,view,-1);
             }
         });
 
@@ -207,7 +213,7 @@ public class OnboardingSampleFragment extends Fragment {
 
     private void showDialogDeleteMain(OnboardingSampleStepAtrributes att, View view,int pos) {
         AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
-        alertDialog.setTitle("Delete Department");
+        alertDialog.setTitle("Delete Onborading Step");
         String str="Are you sure delete '"+att.getTask()+"' ?";
         alertDialog.setMessage(str);
         alertDialog.setIcon(R.drawable.deletetrash);
@@ -219,29 +225,18 @@ public class OnboardingSampleFragment extends Fragment {
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        View toast=null;
+                        alertDialog.dismiss();
                         if(response.isSuccessful()){
-                            leaveAdapter.deleteItemFilter(att,pos);
-                            alertDialog.dismiss();
-                            toast=getLayoutInflater().inflate(R.layout.toast_success,null);
+                            leaveAdapter.deleteItem(att,pos);
+                            ((HomeActivity)getActivity()).showToast(true,"Delete Successfully!");
                         }
-                        else {
-                            toast=getLayoutInflater().inflate(R.layout.toast_failed,null);
+                        else {((HomeActivity)getActivity()).showToast(false,"Delete Failed!");
                         }
-
-                        toast.setLayoutParams(new RelativeLayout.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        ));
-                        RelativeLayout.LayoutParams layoutParams= (RelativeLayout.LayoutParams) toast.getLayoutParams();
-                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        fragmentLeaveApplicationBinding.relativeMain.addView(toast);
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        ((HomeActivity)getActivity()).showToast(false,"Delete Failed!");
                     }
                 });
             }
@@ -283,15 +278,23 @@ public class OnboardingSampleFragment extends Fragment {
         void updateViewData();
     }
     public interface  IOnClick{
-        void showDialog(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes,View view);
+        void showDialog(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes,View view,int pos);
 
         void showDialogDelete(OnboardingSampleStepAtrributes att, View view,int pos);
     }
     int posId;
-    private void showDialogMain(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes,View view) {
+    private void showDialogMain(OnboardingSampleStepAtrributes onboardingSampleStepAtrributes,View view,int pos) {
         final View view2 = LayoutInflater.from(view.getContext()).inflate(R.layout.add_onboarding_ask_dialog, null);
+
         AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
-        //alertDialog.setTitle("Add Department");
+
+        ImageView close=view2.findViewById(R.id.btn_close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });//alertDialog.setTitle("Add Department");
         alertDialog.setIcon(R.drawable.add);
         alertDialog.setCancelable(true);
 //        alertDialog.setMessage("Your Message Here");
@@ -304,6 +307,7 @@ public class OnboardingSampleFragment extends Fragment {
             edtTask.setText(onboardingSampleStepAtrributes.getTask());
             EdtDescription.setText(onboardingSampleStepAtrributes.getDescription());
             autoCompleteTextView.setText(onboardingSampleStepAtrributes.getPosition().getName());
+            posId=onboardingSampleStepAtrributes.getPosition().getId();
         }
         DoAter doAter=new DoAter() {
             @Override
@@ -369,26 +373,56 @@ public class OnboardingSampleFragment extends Fragment {
                     JSONObject child=new JSONObject();
                     try {
                         child.put("description",des);
-                        child.put("position_id",positions.get(posId).getId());
+                        child.put("position_id",posId);
                         child.put("task",task);
                         parent.put("onboarding_sample_step",child);
                         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), parent.toString());
-                        Call<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> call = APIService.getService().addOnboardingSampleSteps(Common.getToken(), body);
-                        call.enqueue(new Callback<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>>() {
-                            @Override
-                            public void onResponse(Call<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> call, Response<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> response) {
-                                if(response.isSuccessful()){
-                                    data.add(response.body().getData().getAttributes());
-                                    leaveAdapter.notifyItemInserted(data.size()-1);
+                        Call  call=null;
+                        if(onboardingSampleStepAtrributes==null) {
+                            call = APIService.getService().addOnboardingSampleSteps(Common.getToken(), body);
+                            call.enqueue(new Callback<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>>() {
+                                @Override
+                                public void onResponse(Call<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> call, Response<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> response) {
                                     alertDialog.dismiss();
+                                    if(response.isSuccessful()){
+                                        data.add(0,response.body().getData().getAttributes());
+                                        leaveAdapter.notifyDataSetChanged();
+
+                                        ((HomeActivity)getActivity()).showToast(true,"Create Successfully!");
+                                    } else ((HomeActivity)getActivity()).showToast(false,"Create failed!");
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> call, Throwable t) {
+                                @Override
+                                public void onFailure(Call<DataResponse<DatumTemplate<OnboardingSampleStepAtrributes>>> call, Throwable t) {
+                                    ((HomeActivity)getActivity()).showToast(false,"Create failed!");
+                                }
+                            });
+                        }
+                        else {
+                            call = APIService.getService().updateOnboardingSampleSteps(Common.getToken(), onboardingSampleStepAtrributes.getId(), body);
+                            call.enqueue(new Callback() {
+                                @Override
+                                public void onResponse(Call call, Response response) {
+                                    if(response.isSuccessful()){
+                                        Gson gson= (new GsonBuilder()).setPrettyPrinting().create();
+                                        JsonParser parser = new JsonParser();
+                                        JsonObject object = (JsonObject) parser.parse(response.body().toString());
+                                        DatumTemplate<OnboardingSampleStepAtrributes> step = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<OnboardingSampleStepAtrributes>>() {}.getType());
+                                        OnboardingSampleStepAtrributes att = step.getAttributes();
+                                        data.set(pos,att);
+                                        leaveAdapter.notifyItemChanged(pos);
+                                        alertDialog.dismiss();
+                                        ((HomeActivity)getActivity()).showToast(true,"Create Successfully!");
+                                    }
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call call, Throwable t) {
+                                    ((HomeActivity)getActivity()).showToast(false,"Create failed!");
+                                }
+                            });
+                        }
+
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -442,7 +476,7 @@ public class OnboardingSampleFragment extends Fragment {
                 if(submited[0]){
                     icIDoSomeThing.showErrorPosition(false);
                 }
-                posId=i;
+                posId=positions.get(i).getId();
             }
         });
         alertDialog.setView(view2);

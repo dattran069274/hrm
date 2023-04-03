@@ -28,6 +28,8 @@ public interface RequestInterface {
 
     @POST("v1/property_management/group_properties")
     Call<JsonObject> addPropertyGroup(@Body RequestBody body, @Header("Authorization") String token);
+    @POST("v1/property_management/properties")
+    Call<JsonObject> addProperty(@Body RequestBody body, @Header("Authorization") String token);
 
     @POST("v1/request_management/request_properties")
     Call<JsonObject> addRequestProperty(@Header("Authorization") String token,@Body RequestBody body);

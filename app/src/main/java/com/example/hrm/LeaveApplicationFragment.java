@@ -199,7 +199,7 @@ public class LeaveApplicationFragment extends Fragment {
                 showDialog(view);
             }
         });
-
+        getLAByStatus(0);
         return fragmentLeaveApplicationBinding.getRoot();
     }
 
@@ -455,27 +455,18 @@ public class LeaveApplicationFragment extends Fragment {
                         dataParent.put("leave_application",dataChild);
                         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), dataParent.toString());
                         Call call= APIService.getServiceJson().addLeaveApplication(body,Common.getToken());
-                        LayoutInflater layoutInflater=getLayoutInflater();
-                        View layout=null;
                         Response response=call.execute();
+                        alertDialog.dismiss();
                         if(response.isSuccessful()){
-                            layout = layoutInflater.inflate(R.layout.toast_success,(ViewGroup) (getActivity().findViewById(R.id.custom_toast_layout)));
-                            Toast toast = new Toast(getContext());
-                            toast.setDuration(Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.BOTTOM, 0, 0);
-                            toast.setView(layout);//setting the view of custom toast layout
-                            toast.show();
+                            ((HomeActivity)getActivity()).showToast(true,"Create Leave Application Success!");
                         } else {
-                            layout = layoutInflater.inflate(R.layout.toast_failed,(ViewGroup) (getActivity().findViewById(R.id.custom_toast_layout)));
-                            Toast toast = new Toast(getContext());
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.BOTTOM, 0, 0);
-                            toast.setView(layout);//setting the view of custom toast layout
-                            toast.show();
+                            ((HomeActivity)getActivity()).showToast(false,"Create Leave Application Failed!");
                         }
                     } catch (JSONException e) {
+                        ((HomeActivity)getActivity()).showToast(false,"Create Leave Application Failed!");
                         throw new RuntimeException(e);
                     } catch (IOException e) {
+                        ((HomeActivity)getActivity()).showToast(false,"Create Leave Application Failed!");
                         throw new RuntimeException(e);
                     }
 

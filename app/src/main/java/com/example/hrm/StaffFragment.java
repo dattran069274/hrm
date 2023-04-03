@@ -18,8 +18,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +34,15 @@ import com.example.hrm.Response.Attributes;
 import com.example.hrm.Response.Data;
 import com.example.hrm.Response.DataResponseList;
 import com.example.hrm.Response.DataStaff;
+import com.example.hrm.Response.DatumStaff;
 import com.example.hrm.Response.DatumTemplate;
 import com.example.hrm.Response.JobTitle;
 import com.example.hrm.Response.Position;
+import com.example.hrm.Response.Staff;
 import com.example.hrm.Response.StaffAttributes;
 import com.example.hrm.Services.APIService;
+import com.example.hrm.ViewModel.StaffShareViewModel;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,7 +57,7 @@ import retrofit2.Response;
  * Use the {@link StaffFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StaffFragment extends Fragment {
+public class StaffFragment extends Fragment implements StaffFragmentView {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -69,7 +76,21 @@ public class StaffFragment extends Fragment {
     @Override
     public void onResume() {
         Log.d("StaffFragment","onResume");
+
         super.onResume();
+//        getParentFragmentManager().setFragmentResultListener("staffFragment",getActivity(),(requestKey, result) -> {
+//            StaffAttributes staff = (StaffAttributes) result.getSerializable("staff");
+//            Log.d("StaffFragment : StaffResult: ",staff.toString());
+//            if(staff!=null){
+//                users.add(0,new DatumStaff(staff));
+//                userAdapter.notifyDataSetChanged();
+//                ((HomeActivity)getActivity()).showToast(true,"Create Staff Success!");
+//                Log.d("StaffFragment : StaffResult: ","Success");
+//            } else {
+//                ((HomeActivity)getActivity()).showToast(true,"Create Staff Failed!");
+//                Log.d("StaffFragment : StaffResult: ","Failed");
+//            }
+//        });
     }
 
     @Override
@@ -123,25 +144,142 @@ public class StaffFragment extends Fragment {
     List<DatumTemplate<Attributes>> departmentsAtts,jobtitlesAtts,positionsAtts;
     List<DatumTemplate<StaffAttributes>> staffAtts;
     String[] departmentNames,jobtitleNames,positionNames,staffNames;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d("StaffFragment","onViewCreated");
+        if(getArguments()!=null){
+            Bundle savedState=null;
+            savedState=getArguments().getBundle("saved_state");
+            if (savedState!=null){
+// set your restored data to your view
+                Log.d("StaffFragment","do inside");
+                departmentsAtts= (List<DatumTemplate<Attributes>>) savedState.getSerializable("departmentsAtts");
+                positionsAtts= (List<DatumTemplate<Attributes>>) savedState.getSerializable("positionsAtts");
+                jobtitlesAtts= (List<DatumTemplate<Attributes>>) savedState.getSerializable("jobtitlesAtts");
+                staffAtts= (List<DatumTemplate<StaffAttributes>>) savedState.getSerializable("staffAtts");
+                departmentNames=savedState.getStringArray("departmentNames");
+                jobtitleNames=savedState.getStringArray("jobtitleNames");
+                positionNames=savedState.getStringArray("positionNames");
+                staffNames=savedState.getStringArray("staffNames");
+                departmentAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, departmentNames);
+                jobtitleAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, jobtitleNames);
+                positionAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, positionNames);
+                //userAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, departmentNames);
+                users=new ArrayList<>();
+                staffAtts.forEach(staff->{users.add(new DatumStaff(staff));});
+                userAdapter.setData(users,getContext(), (HomeActivity) getActivity());
+                departments.setAdapter(departmentAdapter);
+                positions.setAdapter(jobtitleAdapter);
+                jobtitles.setAdapter(positionAdapter);
+
+                departments.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        departments.showDropDown();
+                        return false;
+                    }
+                });
+                departments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Log.d("itemclick",departmentsAtts.get(i).getAttributes().getName());
+                        Helper.closeKeyboard(getActivity());
+                    }
+                });
+
+                jobtitles.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        jobtitles.showDropDown();
+                        return false;
+                    }
+                });
+                jobtitles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        //Log.d("itemclick",jobtitlesAtts.get(i).getAttributes().getName());
+                        Helper.closeKeyboard(getActivity());
+                    }
+                });
+
+                positions.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        positions.showDropDown();
+                        return false;
+                    }
+                });
+                positions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Log.d("itemclick",positionsAtts.get(i).getAttributes().getName());
+                        Helper.closeKeyboard(getActivity());
+                    }
+                });
+
+            }
+//             Bundle action=getArguments().getBundle("Action");
+//            if(action!=null){
+//                boolean isSuccess=action.getBoolean("isSuccess");
+//                if(isSuccess) {
+//                    ((HomeActivity)getActivity()).showToast(true,action+" staff success!");
+//                    Log.d("getArguments","isSuccess");
+//                }
+//                else {
+//                    ((HomeActivity)getActivity()).showToast(false,action+" staff failed!");
+//                    Log.d("getArguments","!isSuccess");
+//                }
+    //        }
+
+
+        } else {
+            Log.d("getArguments","null");
+            getData();
+        }
+        StaffShareViewModel staffShareViewModel = new ViewModelProvider(getActivity()).get(StaffShareViewModel.class);
+        staffShareViewModel.getStaff().observe(getActivity(),staff -> {
+            Log.d("StaffFragment : Staff: ",staff.toString());
+            if(staff!=null){
+                users.add(0,new DatumStaff(staff));
+                userAdapter.notifyDataSetChanged();
+                ((HomeActivity)getActivity()).showToast(true,"staff success!");
+            } else  ((HomeActivity)getActivity()).showToast(false,"staff failed!");
+
+
+        });
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d("StaffFragment :","onSaveInstanceState");
+
+        super.onSaveInstanceState(outState);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         mView=inflater.inflate(R.layout.fragment_staff, container, false);
         rcvDes=mView.findViewById(R.id.rcv_departments);
         btn_add=mView.findViewById(R.id.btn_add);
-        userAdapter=new UserAdapter();
+        userAdapter=new UserAdapter(this);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         rcvDes.addItemDecoration(dividerItemDecoration);
         rcvDes.setAdapter(userAdapter);
         rcvDes.setLayoutManager(linearLayoutManager);
-        getData();
+
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(getContext(), "btn_add", Toast.LENGTH_SHORT).show();
-                    showFormAddDepartment();
+                    showFormAddDepartment(null);
             }
         });
         edtStaffName=mView.findViewById(R.id.edtStaffName);
@@ -164,19 +302,50 @@ public class StaffFragment extends Fragment {
         return mView;
     }
 
-    private void showFormAddDepartment() {
-//        final View view = LayoutInflater.from(getContext()).inflate(R.layout.add_staff_dialog, null);
-//        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-//        alertDialog.setTitle("New Employee");
-//        alertDialog.setIcon(R.drawable.add);
-//        alertDialog.setCancelable(true);
-////        alertDialog.setMessage("Your Message Here");
-//        alertDialog.setView(view);
-//        alertDialog.show();
+    @Override
+    public void onDestroyView() {
+        StaffShareViewModel staffShareViewModel = new ViewModelProvider(getActivity()).get(StaffShareViewModel.class);
+        staffShareViewModel.getStaff().observe(getActivity(),staff -> {
+        });
+        Log.d("StaffFragment","onDestroyView");
+        Bundle savedState=new Bundle();
+        if (departmentsAtts!=null){
+            savedState.putSerializable("departmentsAtts", (Serializable) departmentsAtts);
+        }
+        if (jobtitlesAtts!=null){
+            savedState.putSerializable("jobtitlesAtts", (Serializable) jobtitlesAtts);
+        }
+        if (positionsAtts!=null){
+            savedState.putSerializable("positionsAtts", (Serializable) positionsAtts);
+        }
+        if (staffAtts!=null){
+            savedState.putSerializable("staffAtts", (Serializable) staffAtts);
+        }
+        if (departmentNames!=null){
+            savedState.putStringArray("departmentNames",departmentNames);
+        }
+        if (jobtitleNames!=null){
+            savedState.putStringArray("jobtitleNames",jobtitleNames);
+        }
+        if (positionNames!=null){
+            savedState.putStringArray("positionNames",positionNames);
+        }
+        if (staffNames!=null){
+            savedState.putStringArray("staffNames",staffNames);
+        }
+        if (getArguments()==null){
+            setArguments(new Bundle());
+        }
+        getArguments().putBundle("saved_state",savedState);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void showFormAddDepartment(StaffAttributes staffAttributes) {
             HomeActivity homeActivity= (HomeActivity) getActivity();
-            NewEmployeeFragment fragment=new NewEmployeeFragment();
+            NewEmployeeFragment fragment=new NewEmployeeFragment(staffAttributes);
             final Bundle args = new Bundle();
-            args.putString("TAG", NewEmployeeFragment.MY_TAG);
+            if(staffAttributes!=null) args.putString("TAG", "Update Employee"); else args.putString("TAG", NewEmployeeFragment.MY_TAG);
             args.putSerializable("departmentAtts", (Serializable) departmentsAtts);
             args.putSerializable("jobtitleAtts", (Serializable) jobtitlesAtts);
             args.putSerializable("positionAtts", (Serializable) positionsAtts);
@@ -185,11 +354,11 @@ public class StaffFragment extends Fragment {
             // Log.d("positionNames put", String.valueOf(departmentNames.length));
             args.putSerializable("jobtitleNames", jobtitleNames);
             args.putSerializable("positionNames", positionNames);
-        args.putSerializable("staffNames", staffNames);
+            args.putSerializable("staffNames", staffNames);
             fragment.setArguments(args);
             homeActivity.relaceFragment(fragment);
     }
-
+    List<DatumStaff> users=new ArrayList<>();
     private void getData() {
         Call<DataStaff> call=APIService.getService().get_all_staff(Common.getToken());
         call.enqueue(new Callback<DataStaff>() {
@@ -198,7 +367,8 @@ public class StaffFragment extends Fragment {
                 Log.d("getData",response.toString());
                 //departmentAdapter.setData(response.body());
                 Log.d("getData", String.valueOf(response.body().getData().size()));
-                userAdapter.setData(response.body().getData(),getContext(),(HomeActivity) getActivity());
+                users= response.body().getData();
+                userAdapter.setData(users,getContext(),(HomeActivity) getActivity());
             }
 
             @Override
@@ -221,20 +391,7 @@ public class StaffFragment extends Fragment {
                 }
 
                 departments.setAdapter(departmentAdapter);
-                departments.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        departments.showDropDown();
-                        return false;
-                    }
-                });
-                departments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Log.d("itemclick",departmentsAtts.get(i).getAttributes().getName());
-                        Helper.closeKeyboard(getActivity());
-                    }
-                });
+
             }
 
             @Override
@@ -258,20 +415,7 @@ public class StaffFragment extends Fragment {
                 }
 
                 jobtitles.setAdapter(jobtitleAdapter);
-                jobtitles.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        jobtitles.showDropDown();
-                        return false;
-                    }
-                });
-                jobtitles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        //Log.d("itemclick",jobtitlesAtts.get(i).getAttributes().getName());
-                        Helper.closeKeyboard(getActivity());
-                    }
-                });
+
             }
 
             @Override
@@ -294,20 +438,7 @@ public class StaffFragment extends Fragment {
                 }
 
                 positions.setAdapter(positionAdapter);
-                positions.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        positions.showDropDown();
-                        return false;
-                    }
-                });
-                positions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Log.d("itemclick",positionsAtts.get(i).getAttributes().getName());
-                        Helper.closeKeyboard(getActivity());
-                    }
-                });
+
             }
 
             @Override

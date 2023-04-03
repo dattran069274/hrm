@@ -31,7 +31,7 @@ import retrofit2.Response;
  * Use the {@link StaffTimeOffFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StaffTimeOffFragment extends Fragment {
+public class StaffTimeOffFragment extends Fragment implements BaseFragment {
     public  static final String MY_TAG= "StaffTimeOffFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -131,5 +131,10 @@ public class StaffTimeOffFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentStaffTimeoffBinding=FragmentStaffTimeoffBinding.inflate(inflater);
         return fragmentStaffTimeoffBinding.getRoot();
+    }
+
+    @Override
+    public String getTAG() {
+        return MY_TAG;
     }
 }

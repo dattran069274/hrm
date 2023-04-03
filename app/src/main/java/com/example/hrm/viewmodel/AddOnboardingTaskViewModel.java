@@ -10,6 +10,7 @@ public class AddOnboardingTaskViewModel{
     private String task;
     private String description;
 
+
     public AddOnboardingTaskViewModel(String position, String task, String description) {
         this.position = position;
         this.task = task;

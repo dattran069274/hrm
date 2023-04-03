@@ -272,7 +272,7 @@ public class DepartmentAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
                                     } else {
                                         //Log.d("Update failed",department.getName());
                                         //Toast.makeText(mContext, "Update failed!", Toast.LENGTH_LONG).show();
-                                        activity.showToast(true,"Update failed!");
+                                        activity.showToast(false,"Update failed!");
                                     }
                                     alertDialog.dismiss();
                                 }
@@ -280,7 +280,7 @@ public class DepartmentAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 @Override
                                 public void onFailure(Call call, Throwable t) {
                                     Log.d("Update failed",department.getName());
-                                    activity.showToast(true,"Update failed!");
+                                    activity.showToast(false,"Update failed!");
                                     //Toast.makeText(mContext, "Update failed!", Toast.LENGTH_SHORT).show();
                                     alertDialog.dismiss();
                                 }

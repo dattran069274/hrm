@@ -40,7 +40,7 @@ public class RequestPropertyAdapter extends RecyclerView.Adapter<RequestProperty
     public RequestPropertyAdapter(boolean b) {
         this.visibleActionCol=b;
     }
-
+    private String status="";
     public RequestPropertyAdapter() {
     }
     private HomeActivity activity;
@@ -70,6 +70,7 @@ public class RequestPropertyAdapter extends RecyclerView.Adapter<RequestProperty
         holder.binding.txtRequester.setText(attributes.getRequester()!=null?attributes.getRequester().getFullname():" ");
         holder.binding.txtType.setText(attributes.getRequestType());
         holder.binding.txtStatus.setText(attributes.getStatus());
+        holder.binding.txtProperty.setText(attributes.getGroupProperty().getName());
         if(attributes.getStatus().equals(Common.STATUS_APPROVED)){
             holder.binding.txtStatus.setBackground(mContext.getDrawable(R.drawable.layout_rounded_border_green));
             holder.binding.txtStatus.setTextColor(mContext.getColor(R.color.toast_success_bold));
@@ -86,6 +87,7 @@ public class RequestPropertyAdapter extends RecyclerView.Adapter<RequestProperty
             public void onClick(View view) {
                 RequestPropertyAttributes attributes=null;
                 if(!isFilter) attributes= data.get(position); else attributes=filterData.get(position);
+                activity.addOrRemoveBackButton(true);
                 DetailRequestPropertyFragment fragment=new DetailRequestPropertyFragment(attributes);
                 Bundle bundle = new Bundle();
                 bundle.putString("TAG",fragment.MY_TAG);
@@ -128,9 +130,13 @@ public class RequestPropertyAdapter extends RecyclerView.Adapter<RequestProperty
                     @Override
                     public void onResponse(Call call, Response response) {
                         if(response.isSuccessful()){
+                            if(!status.equals("")){
+                             filterData.remove(att);
+                            }
                             data.remove(att);
                             notifyItemRemoved(position);
-                        }
+                            activity.showToast(true,"Delete Request Property Success!");
+                        } else  activity.showToast(false,"Delete Request Property Failed!");
                     }
 
                     @Override
@@ -159,9 +165,9 @@ public class RequestPropertyAdapter extends RecyclerView.Adapter<RequestProperty
         }  else if(filterData!=null) return filterData.size();
         return 0;
     }
-    private String status;
     private  boolean isFilter=false;
     public void showFilter(String status) {
+        this.status=status;
         this.filterData=new ArrayList<>();
         data.forEach(item->{if(item.getStatus().equals(status.toLowerCase(Locale.ROOT))) filterData.add(item);});
         this.isFilter=true;

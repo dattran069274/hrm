@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.hrm.Response.Staff;
 import com.example.hrm.Response.StaffAttributes;
 import com.example.hrm.StaffInfoFragment;
 import com.example.hrm.StaffOnboardingFragment;

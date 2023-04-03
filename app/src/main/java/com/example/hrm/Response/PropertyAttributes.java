@@ -11,8 +11,10 @@ import com.example.hrm.Response.Attributes;
 import com.google.gson.annotations.Expose;
         import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Generated("jsonschema2pojo")
-public class PropertyAttributes extends BaseObservable {
+public class PropertyAttributes extends BaseObservable implements Serializable {
 
     @SerializedName("id")
     @Expose

@@ -9,21 +9,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.hrm.Adapters.PropertyHistoryAdapter;
+import com.example.hrm.Adapters.ProvidingHistoryAdapter;
 import com.example.hrm.Response.DataListHasMetaResponse;
-import com.example.hrm.Response.DataResponseList;
 import com.example.hrm.Response.DatumTemplate;
 import com.example.hrm.Response.PropertyAttributes;
 import com.example.hrm.Response.PropertyHistoryAttributes;
 import com.example.hrm.Services.APIService;
 import com.example.hrm.databinding.FragmentPropertyHistoryBinding;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -80,19 +75,19 @@ public class ProvidingHistoryFragment extends Fragment {
     }
     FragmentPropertyHistoryBinding binding;
     ArrayList<PropertyHistoryAttributes> data=new ArrayList<>();
-    PropertyHistoryAdapter propertyHistoryAdapter;
+    ProvidingHistoryAdapter providingHistoryAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding=FragmentPropertyHistoryBinding.inflate(inflater);
-        propertyHistoryAdapter=new PropertyHistoryAdapter(true);
-        binding.RecyclerView.setAdapter(propertyHistoryAdapter);
+        providingHistoryAdapter =new ProvidingHistoryAdapter(true);
+        binding.RecyclerView.setAdapter(providingHistoryAdapter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         binding.RecyclerView.addItemDecoration(dividerItemDecoration);
         binding.RecyclerView.setLayoutManager(linearLayoutManager);
-        binding.columnAction.setVisibility(View.VISIBLE);
+        //binding.columnAction.setVisibility(View.VISIBLE);
         getData();
         return binding.getRoot();
     }
@@ -108,7 +103,7 @@ public class ProvidingHistoryFragment extends Fragment {
             public void onResponse(Call<DataListHasMetaResponse<DatumTemplate<PropertyHistoryAttributes>>> call, Response<DataListHasMetaResponse<DatumTemplate<PropertyHistoryAttributes>>> response) {
                 if(response.isSuccessful()){
                     response.body().getData().forEach(item->{data.add(item.getAttributes());});
-                    propertyHistoryAdapter.setData(data,getContext(), (HomeActivity) getActivity());
+                    providingHistoryAdapter.setData(data,getContext(), (HomeActivity) getActivity());
                 }
             }
             @Override

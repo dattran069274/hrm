@@ -27,6 +27,7 @@ import com.example.hrm.databinding.AssignPropertyDialogBinding;
 import com.example.hrm.databinding.FragmentDetailPropertyBinding;
 import com.example.hrm.databinding.FragmentDetailPropertyHistoryProvidingBinding;
 import com.example.hrm.databinding.FragmentPropertyHistoryBinding;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -186,8 +187,8 @@ public class DetailPropertyProvidingHistoryFragment extends Fragment {
                         try {
                             data.put("receiver_id", String.valueOf(staffId));
                             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), data.toString());
-                            Call<ResponseBody> call = APIService.getService().responsePropertyRequest(Common.getToken(), attributes.getId(), body);
-                            Response<ResponseBody> res = call.execute();
+                            Call<JsonObject> call = APIService.getService().responsePropertyRequest(Common.getToken(), attributes.getId(), body);
+                            Response<JsonObject> res = call.execute();
                             View toast=null;
                             if(res.isSuccessful()){
                                 //data change

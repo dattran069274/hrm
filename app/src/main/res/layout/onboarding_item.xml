@@ -56,9 +56,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:text="Status:"
+                        android:text="Status: "
                         android:textSize="@dimen/nomarlText"></TextView>
                     <TextView
+                        android:padding="@dimen/statusPadding"
                         android:id="@+id/txt_status"
                         android:paddingRight="8dp"
                         android:paddingLeft="8dp"
@@ -66,10 +67,10 @@
                         android:paddingBottom="4dp"
                         android:layout_gravity="center_vertical"
                         android:gravity="center_horizontal"
-                        android:background="@drawable/recviendo"
+                        android:background="@drawable/layout_rounded_border_red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
+                        android:textColor="@color/toast_failed_bold"
                         android:text="@string/outstanding"
                         android:textSize="@dimen/miniText"></TextView>
                 </LinearLayout>
@@ -88,7 +89,7 @@
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Assign To:"
+                        android:text="Assign To: "
                         android:gravity="center"
                         ></TextView>
                 </LinearLayout>
@@ -123,7 +124,7 @@
                         android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Start:"
+                        android:text="Start: "
                         android:gravity="center"
                         ></TextView>
                     <TextView
@@ -147,7 +148,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:text="To:"
+                        android:text="To: "
                         android:textSize="@dimen/nomarlText"></TextView>
                     <TextView
                         android:id="@+id/txt_end_date"
@@ -172,19 +173,19 @@
                     <RadioButton
                         android:padding="5dp"
                         android:layout_marginRight="50dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"></RadioButton>
+                        android:layout_width="@dimen/action_button"
+                        android:layout_height="@dimen/action_button"></RadioButton>
                     <ImageView
                         android:id="@+id/img_edit"
                         android:layout_marginRight="50dp"
                         android:src="@drawable/edit"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"></ImageView>
+                        android:layout_width="@dimen/action_button"
+                        android:layout_height="@dimen/action_button"></ImageView>
                     <ImageView
                         android:id="@+id/img_delete"
                         android:src="@drawable/deletetrash"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"></ImageView>
+                        android:layout_width="@dimen/action_button"
+                        android:layout_height="@dimen/action_button"></ImageView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

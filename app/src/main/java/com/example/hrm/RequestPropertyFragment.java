@@ -218,6 +218,7 @@ public class RequestPropertyFragment extends Fragment {
         binding.txtSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                vIewModel.setSubmitted(true);
                 if (vIewModel.check()) {
                     {
                         JSONObject dataParent = new JSONObject();
@@ -252,19 +253,23 @@ public class RequestPropertyFragment extends Fragment {
                                 adapter.notifyItemInserted(data.size() - 1);
                                 Log.d("eeeeeeee", emp.toString());
                                 alertDialog.dismiss();
-                                Toast.makeText(getContext(), "Add department success!", Toast.LENGTH_SHORT).show();
+                                ((HomeActivity)getActivity()).showToast(true,"Create Request Property Success!");
                             } else {
                                 Log.d("RETROFIT_ERROR :", String.valueOf(res.code()));
                                 JSONObject jsonObject = null;
                                 jsonObject = new JSONObject(res.errorBody().string());
                                 JSONArray jsonArray = jsonObject.getJSONArray("errors");
                                 Log.d("RETROFIT_ERROR_detail :", String.valueOf(jsonArray.getJSONObject(0).get("detail")));
-                                Toast.makeText(getContext(), String.valueOf(jsonArray.getJSONObject(0).get("detail")), Toast.LENGTH_SHORT).show();
-
+                                //Toast.makeText(getContext(), String.valueOf(jsonArray.getJSONObject(0).get("detail")), Toast.LENGTH_SHORT).show();
+                                ((HomeActivity)getActivity()).showToast(false,"Create Request Property Failed!");
                             }
                         } catch (JSONException e) {
+                            ((HomeActivity)getActivity()).showToast(false,"Create Request Property Failed!");
+
                             throw new RuntimeException(e);
                         } catch (IOException e) {
+                            ((HomeActivity)getActivity()).showToast(false,"Create Request Property Failed!");
+
                             throw new RuntimeException(e);
                         }
 

@@ -75,7 +75,7 @@ public class OnboardingSampleStepAdapter extends RecyclerView.Adapter<RecyclerVi
             leaveViewholder.leaveItemBinding.btnShow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    iOnClick.showDialog(att,view);
+                    iOnClick.showDialog(att,view,position);
                 }
             });
             leaveViewholder.leaveItemBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
@@ -117,10 +117,15 @@ public class OnboardingSampleStepAdapter extends RecyclerView.Adapter<RecyclerVi
         this.current=newData;
         notifyDataSetChanged();
     }
-    public void deleteItemFilter(OnboardingSampleStepAtrributes att,int pos){
+    public void deleteItem(OnboardingSampleStepAtrributes att,int pos){
         if(isShowCurrent){
             if(this.current!=null&&(this.current.size()>pos)){
-                this.current.remove(att);
+                this.current.remove(att);this.data.remove(att);
+                notifyItemRemoved(pos);
+            }
+        } else {
+            if(this.data!=null&&(this.data.size()>pos)){
+                this.data.remove(att);
                 notifyItemRemoved(pos);
             }
         }

@@ -7,7 +7,6 @@
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:id="@+id/relative_main"
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -30,6 +29,7 @@
                 android:background="@drawable/botron"
                 >
                 <TextView
+                    android:textSize="@dimen/nomarlText"
                     android:textColor="@color/white"
                     android:gravity="center_horizontal"
                     android:layout_width="match_parent"
@@ -38,6 +38,8 @@
             </LinearLayout>
         </RelativeLayout>
         <AutoCompleteTextView
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:cursorVisible="false"
             android:focusable="false"
             android:layout_below="@id/top"
@@ -56,85 +58,12 @@
             android:layout_width="match_parent"
             android:background="@drawable/custom_edit_text_blue"
             android:layout_height="50dp"></AutoCompleteTextView>
-        <HorizontalScrollView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_below="@id/AutoCompleteTextViewSelectStatus"
+            android:id="@+id/RecyclerView"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="@dimen/STT"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/STT"
-
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/nomarlText"
-                        android:textStyle="bold"></TextView>
-
-                    <TextView
-                        android:layout_width="@dimen/Provider"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="4"
-                        android:text="@string/Requester"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/nomarlText"
-                        android:textStyle="bold"></TextView>
-
-
-
-
-
-                    <TextView
-
-                        android:layout_width="@dimen/ProvidingDate"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/Type"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/nomarlText"
-                        android:textStyle="bold"></TextView>
-
-                    <TextView
-                        android:layout_width="@dimen/Type"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/Status"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/nomarlText"
-                        android:textStyle="bold"></TextView>
-                    <TextView
-                        android:id="@+id/columnAction"
-                        android:visibility="gone"
-                        android:layout_width="@dimen/Action"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/Action"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/nomarlText"
-                        android:textStyle="bold"></TextView>
-                </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/RecyclerView"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-            </LinearLayout>
-        </HorizontalScrollView>
+            android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
     </RelativeLayout>
 
 

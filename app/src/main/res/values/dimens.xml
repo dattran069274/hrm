@@ -13,4 +13,6 @@
     <dimen name="Type">80dp</dimen>
     <dimen name="showBtn">30dp</dimen>
     <dimen name="Action">120dp</dimen>
+    <dimen name="statusPadding">7dp</dimen>
+    <dimen name="action_button">30dp</dimen>
 </resources>

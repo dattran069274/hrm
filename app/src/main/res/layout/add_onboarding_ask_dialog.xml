@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="Error"
+            android:text="@string/SelectPosition"
             android:textColor="@color/danger"
             android:textSize="@dimen/miniText"
            ></TextView>
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="Error"
+            android:text="@string/TaskIsRequired"
             android:textColor="@color/danger"
             android:textSize="@dimen/miniText"
             ></TextView>
@@ -118,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="Error"
+            android:text="@string/DescriptionIsRequired"
             android:textColor="@color/danger"
             android:textSize="@dimen/miniText"
             ></TextView>
@@ -146,7 +146,7 @@
                     android:gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="SUBMIT"></TextView>
+                    android:text="@string/SUBMIT"></TextView>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

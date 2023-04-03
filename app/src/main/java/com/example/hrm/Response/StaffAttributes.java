@@ -47,13 +47,13 @@ public class StaffAttributes implements Serializable {
     private JobTitle jobTitle;
     @SerializedName("upper_level")
     @Expose
-    private Object upperLevel;
+    private Staff upperLevel;
     @SerializedName("lower_levels")
     @Expose
-    private List<Object> lowerLevels;
+    private List<Staff> lowerLevels;
     @SerializedName("roles")
     @Expose
-    private List<Object> roles;
+    private List<RoleAttribute> roles;
 
     public Integer getId() {
         return id;
@@ -151,27 +151,27 @@ public class StaffAttributes implements Serializable {
         this.jobTitle = jobTitle;
     }
 
-    public Object getUpperLevel() {
+    public Staff getUpperLevel() {
         return upperLevel;
     }
 
-    public void setUpperLevel(Object upperLevel) {
+    public void setUpperLevel(Staff upperLevel) {
         this.upperLevel = upperLevel;
     }
 
-    public List<Object> getLowerLevels() {
+    public List<Staff> getLowerLevels() {
         return lowerLevels;
     }
 
-    public void setLowerLevels(List<Object> lowerLevels) {
+    public void setLowerLevels(List<Staff> lowerLevels) {
         this.lowerLevels = lowerLevels;
     }
 
-    public List<Object> getRoles() {
+    public List<RoleAttribute> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Object> roles) {
+    public void setRoles(List<RoleAttribute> roles) {
         this.roles = roles;
     }
 

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -15,13 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hrm.Common;
 import com.example.hrm.DetailPropertyProvidingHistoryFragment;
 import com.example.hrm.HomeActivity;
-import com.example.hrm.PropertyHistoryFragment;
 import com.example.hrm.R;
-import com.example.hrm.Response.PropertyAttributes;
 import com.example.hrm.Response.PropertyHistoryAttributes;
 import com.example.hrm.Services.APIService;
-import com.example.hrm.databinding.DepartmentItemBinding;
-import com.example.hrm.databinding.PropertyHistoryItemBinding;
+import com.example.hrm.databinding.PropertyHistoriesItemBinding;
+import com.example.hrm.databinding.PropertyProvidingHistoriesItemBinding;
 
 import java.util.List;
 
@@ -32,9 +29,8 @@ import retrofit2.Response;
 
 public class PropertyHistoryAdapter extends RecyclerView.Adapter<PropertyHistoryAdapter.PropertyHistoryViewHolder> {
     List<PropertyHistoryAttributes> data;
-    private  boolean visibleActionCol=false;
     public PropertyHistoryAdapter(boolean b) {
-        this.visibleActionCol=b;
+        //this.visibleActionCol=b;
     }
 
     public PropertyHistoryAdapter() {
@@ -50,14 +46,14 @@ public class PropertyHistoryAdapter extends RecyclerView.Adapter<PropertyHistory
     @NonNull
     @Override
     public PropertyHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        PropertyHistoryItemBinding propertyHistoryItemBinding=PropertyHistoryItemBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
+        PropertyHistoriesItemBinding propertyHistoryItemBinding=PropertyHistoriesItemBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
         return new PropertyHistoryViewHolder(propertyHistoryItemBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PropertyHistoryViewHolder holder, int position) {
         PropertyHistoryAttributes attributes= data.get(position);
-        holder.binding.txtStt.setText(String.valueOf(position+1));
+        holder.binding.txtIndex.setText(String.valueOf(position+1));
         if(attributes.getProperty()!=null){
             holder.binding.txtProperty.setText(attributes.getProperty().getName());
         }
@@ -75,23 +71,8 @@ public class PropertyHistoryAdapter extends RecyclerView.Adapter<PropertyHistory
         }
         holder.binding.txtProvider.setText(attributes.getProvider().getFullname());
         holder.binding.txtReceiver.setText(attributes.getReceiver().getFullname());
-        holder.binding.columnAction.setVisibility(View.VISIBLE);
-        holder.binding.showBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DetailPropertyProvidingHistoryFragment fragment=new DetailPropertyProvidingHistoryFragment(attributes);
-                Bundle bundle = new Bundle();
-                bundle.putString("TAG",fragment.MY_TAG);
-                fragment.setArguments(bundle);
-                activity.relaceFragment(fragment);
-            }
-        });
-        holder.binding.deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFormDelete(attributes,position,mContext);
-            }
-        });
+        //holder.binding.columnAction.setVisibility(View.VISIBLE);
+
     }
     private void showFormDelete(PropertyHistoryAttributes att, int position, Context context) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -139,8 +120,8 @@ public class PropertyHistoryAdapter extends RecyclerView.Adapter<PropertyHistory
     }
 
     class PropertyHistoryViewHolder extends RecyclerView.ViewHolder{
-        PropertyHistoryItemBinding binding;
-        public PropertyHistoryViewHolder(@NonNull PropertyHistoryItemBinding binding) {
+        PropertyHistoriesItemBinding binding;
+        public PropertyHistoryViewHolder(@NonNull PropertyHistoriesItemBinding binding) {
             super(binding.getRoot());
             this.binding=binding;
         }

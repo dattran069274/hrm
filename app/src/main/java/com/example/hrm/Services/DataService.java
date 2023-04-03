@@ -109,13 +109,16 @@ public interface DataService {
     @PUT("v1/staff_management/departments/{id}")
     Call<ResponseBody> updateDepartment(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
     @PUT("v1/property_management/properties/{id}")
-    Call<ResponseBody> updateProperty(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
+    Call<JsonObject> updateProperty(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
 
     @PUT("v1/staff_management/job_titles/{id}")
     Call<ResponseBody> updateJobtitle(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
+    @PUT("v1/staff_management/staffs/{id}")
+    Call<JsonObject> updateStaff(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
     @PUT("v1/staff_management/positions/{id}")
     Call<ResponseBody> updatePosition(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
-
+    @PUT("v1/onboarding_management/onboarding_sample_steps/{id}")
+    Call<JsonObject> updateOnboardingSampleSteps(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
     @POST("v1/leave_management/leave_applications/{id}/respond_to_leave_application")
     Call<DataResponse<DatumTemplate<LeaveApplicationAttributes>>> respond_to_leave_application(@Path("id") int id,@Header("Authorization") String token,@Body RequestBody body);
 
@@ -142,7 +145,9 @@ public interface DataService {
     @PUT("v1/property_management/group_properties/{id}")
     Call<ResponseBody> updatePrppertyGroup(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
     @PUT("v1/property_management/properties/{id}/response_property_request")
-    Call<ResponseBody> responsePropertyRequest(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
+    Call<JsonObject> responsePropertyRequest(@Header("Authorization") String token,@Path("id") Integer id,@Body RequestBody body);
+    @PUT("v1/property_management/properties/{id}/response_property_request")
+    Call<JsonObject> responsePropertyRequest(@Header("Authorization") String token,@Path("id") Integer id);
     @POST("v1/property_management/property_providing_histories/histories_by_property")
     Call<DataResponseList<DatumTemplate<PropertyHistoryAttributes>>> getPropertyHistory(@Header("Authorization") String token,@Body RequestBody body);
     @GET("v1/property_management/property_providing_histories")

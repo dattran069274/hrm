@@ -23,35 +23,46 @@ public class PropertyViewModel extends BaseObservable {
     private Integer id;
     @SerializedName("code_seri")
     @Expose
-    private String codeSeri;
+    private String codeSeri="";
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name="";
     @SerializedName("brand")
     @Expose
-    private String brand;
+    private String brand="";
     @SerializedName("group_property")
     @Expose
-    private String groupProperty;
+    private String groupProperty="";
     @SerializedName("price")
     @Expose
-    private String price;
+    private String price="";
     @SerializedName("date_buy")
     @Expose
-    private String dateBuy;
+    private String dateBuy="";
     @SerializedName("number_of_repairs")
     @Expose
-    private String numberOfRepairs;
+    private String numberOfRepairs="";
     @SerializedName("status")
     @Expose
-    private String status;
+    private String status="";
     @SerializedName("created_at")
     @Expose
-    private String createdAt;
+    private String createdAt="";
     @SerializedName("updated_at")
     @Expose
-    private String updatedAt;
+    private String updatedAt="";
     private ArrayAdapter<String> adapter;
+    private  boolean submited=false;
+    @Bindable
+    public boolean isSubmited() {
+        return submited;
+    }
+
+    public void setSubmited(boolean submited) {
+        this.submited = submited;
+        notifyPropertyChanged(BR.submited);
+    }
+
     @Bindable
     public ArrayAdapter<String> getAdapter() {
         return adapter;
@@ -71,6 +82,8 @@ public class PropertyViewModel extends BaseObservable {
         this.numberOfRepairs= String.valueOf(property.getNumberOfRepairs());
         this.name=property.getName();
         this.price= String.valueOf(property.getPrice());
+    }
+    public PropertyViewModel() {
     }
 
     @Bindable
@@ -173,5 +186,13 @@ public class PropertyViewModel extends BaseObservable {
         if(TextUtils.isEmpty(name)) return false;
         if(TextUtils.isEmpty(price)) return false;
         return true;
+    }
+    String dateBuyReverse;
+    public void setDateBuyReverse(String format) {
+        this.dateBuyReverse=format;
+    }
+
+    public String getDateBuyReverse() {
+        return dateBuyReverse;
     }
 }

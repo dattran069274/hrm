@@ -3,7 +3,10 @@ package com.example.hrm;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -26,10 +29,17 @@ import android.widget.Toast;
 
 import com.example.hrm.Response.Attributes;
 import com.example.hrm.Response.DatumTemplate;
+import com.example.hrm.Response.Staff;
 import com.example.hrm.Response.StaffAttributes;
 import com.example.hrm.Services.APIService;
+import com.example.hrm.ViewModel.StaffShareViewModel;
 import com.example.hrm.databinding.FragmentNewEmployeeBinding;
 import com.example.hrm.viewmodel.NewEmployeeViewModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +74,10 @@ public class NewEmployeeFragment extends Fragment {
     public NewEmployeeFragment() {
         // Required empty public constructor
     }
+    private  StaffAttributes staff;
+    public NewEmployeeFragment(StaffAttributes staff) {
+    this.staff=staff;
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -90,7 +104,32 @@ public class NewEmployeeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
+
+    FragmentNewEmployeeBinding fragmentNewEmployeeBinding;
+    private StaffShareViewModel staffShareViewModel;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+        staffShareViewModel = new ViewModelProvider(getActivity()).get(StaffShareViewModel.class);
+
+        NewEmployeeViewModel viewModel=new NewEmployeeViewModel(this.staff);
+        fragmentNewEmployeeBinding=FragmentNewEmployeeBinding.inflate(inflater);
+        fragmentNewEmployeeBinding.setNewEmployeeViewModel(viewModel);
+        // Inflate the layout for this fragment
         if (getArguments() != null) {
+            Log.d("getArguments","!null");
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             departmentsAtts= (List<DatumTemplate<Attributes>>) getArguments().getSerializable("departmentAtts");
@@ -106,23 +145,46 @@ public class NewEmployeeFragment extends Fragment {
             jobtitleAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, jobtitleNames);
             positionAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, positionNames);
             staffAdapter=new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, staffNames);
-        }
-    }
-    FragmentNewEmployeeBinding fragmentNewEmployeeBinding;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        } else  Log.d("getArguments","null");
 
-        StrictMode.setThreadPolicy(policy);
-        // Inflate the layout for this fragment
-        NewEmployeeViewModel viewModel=new NewEmployeeViewModel();
-        fragmentNewEmployeeBinding=FragmentNewEmployeeBinding.inflate(inflater);
-        fragmentNewEmployeeBinding.setNewEmployeeViewModel(viewModel);
+        if(this.staff!=null){
+            //posId,jobId,deId,staffId
+            //hide password
+            fragmentNewEmployeeBinding.txtPassword.setVisibility(View.GONE);
+            fragmentNewEmployeeBinding.txtMessConfirmPassword.setVisibility(View.GONE);
+            fragmentNewEmployeeBinding.txtMessPassword.setVisibility(View.GONE);
+            fragmentNewEmployeeBinding.txtConfirmPassword.setVisibility(View.GONE);
+            viewModel.setCheckPassword(false);
+            if(staff.getPosition()!=null) {
+                fragmentNewEmployeeBinding.edtPositions.setText(staff.getPosition().getName(),false);
+                viewModel.setPosition(staff.getPosition().getName());
+                posId=staff.getPosition().getId();
+
+            }
+            if(staff.getJobTitle()!=null) {
+                fragmentNewEmployeeBinding.edtJobtitle.setText(staff.getJobTitle().getTitle(),false);
+                viewModel.setJobtitle(staff.getJobTitle().getTitle());
+                jobId=staff.getJobTitle().getId();
+            }
+            if(staff.getDepartment()!=null) {
+                fragmentNewEmployeeBinding.edtDepartments.setText(staff.getDepartment().getName(),false);
+                viewModel.setDepartment(staff.getDepartment().getName());
+                deId=staff.getDepartment().getId();
+            }
+            if(staff.getUpperLevel()!=null) {
+                fragmentNewEmployeeBinding.edtManager.setText(staff.getUpperLevel().getFullname(),false);
+                viewModel.setManager(staff.getUpperLevel().getFullname());
+                posId=staff.getUpperLevel().getId();
+            }
+        }
+
         fragmentNewEmployeeBinding.edtDepartments.setAdapter(departmentAdapter);
+
         fragmentNewEmployeeBinding.edtDepartments.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d("onTouch","showDropDown");
+                Log.d("onTouch","departmentNames Size:"+departmentNames.length);
                 fragmentNewEmployeeBinding.edtDepartments.showDropDown();
                 return false;
             }
@@ -210,17 +272,18 @@ public class NewEmployeeFragment extends Fragment {
         fragmentNewEmployeeBinding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(viewModel.isSubmited()){
+                viewModel.setSubmited(true);
+                if(viewModel.checkAll()){
                     sendData();
                 }
-                viewModel.setSubmited(true);
-
             }
         });
         return fragmentNewEmployeeBinding.getRoot();
     }
 
     private void sendData() {
+        String tag="";
+        if(staff==null) tag="Create";else tag="Update";
         JSONObject dataParent=new JSONObject();
         JSONObject dataChild=new JSONObject();
         try {
@@ -238,78 +301,42 @@ public class NewEmployeeFragment extends Fragment {
             dataChild.put("staff_id",staffId);
             dataParent.put("staff",dataChild);
             RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), dataParent.toString());
-            Call call= APIService.getServiceJson().addStaff(body,Common.getToken());
+            Call call=null;
+            if(staff==null) call=APIService.getServiceJson().addStaff(body,Common.getToken());
+            else call=APIService.getService().updateStaff(Common.getToken(),staff.getId(),body);
             Response response=call.execute();
-            LayoutInflater layoutInflater=getLayoutInflater();
-            View layout=null;
-            int px=Common.getValueInPixel(getContext(),300)/10;
+            boolean isSuccess=false;
             if(response.isSuccessful()){
-                //Toast.makeText(getContext(), "Add staff successfully", Toast.LENGTH_SHORT).show();
-
-                layout = layoutInflater.inflate(R.layout.toast_success,(ViewGroup) (getActivity().findViewById(R.id.custom_toast_layout)));
-                Toast toast = new Toast(getContext());
-                toast.setDuration(Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
-                toast.setView(layout);//setting the view of custom toast layout
-                toast.show();
-
-                Log.d("addstaff","ok");
-                new Timer().scheduleAtFixedRate(new TimerTask(){
-                    @Override
-                    public void run(){
-                        LinearLayout line=toast.getView().findViewById(R.id.line_count_down);
-                        ViewGroup.LayoutParams params=line.getLayoutParams();
-                        params.width=params.width-px;
-                        line.setLayoutParams(params);
-                        Log.d("linew", String.valueOf(line.getLayoutParams().width));
-                        Log.d("linewpx", String.valueOf(px));
-                    }
-                },0,100);
-            } else {
-                layout = layoutInflater.inflate(R.layout.toast_failed,(ViewGroup) (getActivity().findViewById(R.id.custom_toast_layout)));
-                Toast toast = new Toast(getContext());
-                toast.setDuration(Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
-                toast.setView(layout);//setting the view of custom toast layout
-                //toast.show();
-                Log.d("addstaff","failed");
-//                Handler handler = new Handler();
-//                handler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                            }
-//                        });
-//                    }
-//                });
-                LinearLayout line=toast.getView().findViewById(R.id.line_count_down);
-                CountDownTimer countDownTimer;
-                countDownTimer = new CountDownTimer(5000, 200) {
-                    public void onTick(long millisUntilFinished) {
-
-                        ViewGroup.LayoutParams params=line.getLayoutParams();
-                        params.width=params.width-px;
-                        line.setLayoutParams(params);
-                        Log.d("linew", String.valueOf(line.getLayoutParams().width));
-                        //Log.d("linewpx", String.valueOf(px));
-                        toast.show();
-                    }
-
-                    public void onFinish() {
-                        toast.cancel();
-                    }
-                };
-
-                toast.show();
-                countDownTimer.start();
-
+                isSuccess=true;
+                Gson gson= (new GsonBuilder()).setPrettyPrinting().create();
+                JsonParser parser = new JsonParser();
+                JsonObject object = (JsonObject) parser.parse(response.body().toString());// response will be the json String
+                DatumTemplate<StaffAttributes> data = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<StaffAttributes>>() {}.getType());
+                StaffAttributes staffRes=data.getAttributes();
+                staffShareViewModel.setStaff(staffRes);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("staff",staffRes);
+                getParentFragmentManager().setFragmentResult("staffFragment",bundle);
             }
+            else {
+                staffShareViewModel.setStaff(null);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("staff",null);
+                getParentFragmentManager().setFragmentResult("staffFragment",bundle);
+            }
+            ((HomeActivity)getActivity()).onBackPressed();
+//            StaffFragment fragment=new StaffFragment();
+//            final Bundle args = new Bundle();
+//            args.putString("TAG", StaffFragment.MY_TAG);
+//            args.putString("Action", tag);
+//            args.putBoolean("isSuccess",isSuccess);
+//            fragment.setArguments(args);
+//            ((HomeActivity)getActivity()).relaceFragment(fragment);
         } catch (JSONException e) {
+            ((HomeActivity)getActivity()).showToast(false,tag+" staff failed!");
             throw new RuntimeException(e);
         } catch (IOException e) {
+            ((HomeActivity)getActivity()).showToast(false,tag+" staff failed!");
             throw new RuntimeException(e);
         }
 

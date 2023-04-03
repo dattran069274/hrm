@@ -82,10 +82,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Error"
+                    android:text="@string/SelectType"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.requestType) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{(TextUtils.isEmpty(Property.requestType)&amp;&amp;Property.isSubmitted) ? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -118,10 +118,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Error"
+                    android:text="@string/SelectType"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.groupProperty) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{(TextUtils.isEmpty(Property.groupProperty)&amp;&amp;Property.isSubmitted) ? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -148,10 +148,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Error"
+                    android:text="@string/ReasonIsRequired"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.reason) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{(TextUtils.isEmpty(Property.reason)&amp;&amp;Property.isSubmitted) ? View.VISIBLE : View.GONE}"
                     ></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
@@ -179,10 +179,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="Error"
+                    android:text="@string/DescriptionIsRequired"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.description) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{(TextUtils.isEmpty(Property.description)&amp;&amp;Property.isSubmitted) ? View.VISIBLE : View.GONE}"
                     ></TextView>
 
             </LinearLayout>

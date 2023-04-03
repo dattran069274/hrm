@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hrm.Adapters.PropertyHistoryAdapter;
+import com.example.hrm.Adapters.ProvidingHistoryAdapter;
 import com.example.hrm.Response.DataResponseList;
 import com.example.hrm.Response.DatumTemplate;
 import com.example.hrm.Response.PropertyAttributes;
@@ -79,14 +80,14 @@ public class PropertyHistoryFragment extends Fragment {
     }
     FragmentPropertyHistoryBinding binding;
     ArrayList<PropertyHistoryAttributes> data=new ArrayList<>();
-    PropertyHistoryAdapter propertyHistoryAdapter;
+    PropertyHistoryAdapter providingHistoryAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding=FragmentPropertyHistoryBinding.inflate(inflater);
-        propertyHistoryAdapter=new PropertyHistoryAdapter();
-        binding.RecyclerView.setAdapter(propertyHistoryAdapter);
+        providingHistoryAdapter =new PropertyHistoryAdapter();
+        binding.RecyclerView.setAdapter(providingHistoryAdapter);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         binding.RecyclerView.setLayoutManager(linearLayoutManager);
         getData();
@@ -105,7 +106,7 @@ public class PropertyHistoryFragment extends Fragment {
                 public void onResponse(Call<DataResponseList<DatumTemplate<PropertyHistoryAttributes>>> call, Response<DataResponseList<DatumTemplate<PropertyHistoryAttributes>>> response) {
                     if(response.isSuccessful()){
                         response.body().getData().forEach(item->{data.add(item.getAttributes());});
-                        propertyHistoryAdapter.setData(data,getContext(), (HomeActivity) getActivity());
+                        providingHistoryAdapter.setData(data,getContext(), (HomeActivity) getActivity());
                     }
                 }
 

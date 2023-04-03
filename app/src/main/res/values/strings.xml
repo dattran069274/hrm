@@ -87,6 +87,23 @@
     <string name="self_preview_q_others">Others</string>
     <string name="jobTitle">Job Title</string>
     <string name="position">Position</string>
+    <string name="provided">provided</string>
+    <string name="device">device</string>
+    <string name="ADD_PROPERTY">Add Property</string>
+    <string name="nav_open">open</string>
+    <string name="nav_close">close</string>
+    <string name="SelectPosition">Select Position</string>
+    <string name="TaskIsRequired">Task is required</string>
+    <string name="DescriptionIsRequired">Description is required</string>
+    <string name="SelectType">Select Type</string>
+    <string name="ReasonIsRequired">Reason is required</string>
+    <string name="CodeIsRequired">Code is required</string>
+    <string name="NameIsRequired">Name is required</string>
+    <string name="priceIsRequired">price is required</string>
+    <string name="brandIsRequired">brand is required</string>
+    <string name="numberOfRepairsIsRequired">number Of Repairs is required</string>
+    <string name="buyDateIsRequired">buydate  is required</string>
+    <string name="PropertyGroupIsRequired">Property Group is required</string>
     <string-array name="leaveType">
         <item>casual leave</item>
         <item>unpaid leave</item>

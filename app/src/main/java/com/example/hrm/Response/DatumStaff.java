@@ -25,6 +25,12 @@ public class DatumStaff {
         this.attributes= item.getAttributes();
     }
 
+    public DatumStaff(StaffAttributes staff) {
+        this.id= String.valueOf(staff.getId());
+        this.type=staff.getStatus();
+        this.attributes= staff;
+    }
+
     public String getId() {
         return id;
     }

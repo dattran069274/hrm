@@ -80,7 +80,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.codeSeri) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{TextUtils.isEmpty(Property.codeSeri)&amp;&amp;Property.submited ? View.VISIBLE : View.GONE}"
                     ></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
@@ -111,7 +111,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.name)? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(Property.name)&amp;&amp;Property.submited? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -141,7 +141,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.brand)? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(Property.brand)&amp;&amp;Property.submited? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -171,7 +171,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(String.valueOf(Property.price)) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(String.valueOf(Property.price))&amp;&amp;Property.submited ? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -201,7 +201,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.numberOfRepairs) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(Property.numberOfRepairs)&amp;&amp;Property.submited ? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:visibility="gone"
                     android:layout_width="wrap_content"
@@ -240,7 +240,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.dateBuy) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(Property.dateBuy)&amp;&amp;Property.submited ? View.VISIBLE:View.GONE}"></TextView>
                 <TextView
                     android:layout_marginTop="20dp"
                     android:textColor="@color/black"
@@ -276,7 +276,7 @@
                     android:text="Error"
                     android:textColor="@color/danger"
                     android:textSize="@dimen/miniText"
-                    android:visibility="@{TextUtils.isEmpty(Property.groupProperty) ? View.VISIBLE:View.GONE}"></TextView>
+                    android:visibility="@{TextUtils.isEmpty(Property.groupProperty)&amp;&amp;Property.submited ? View.VISIBLE:View.GONE}"></TextView>
             </LinearLayout>
 
             <RelativeLayout

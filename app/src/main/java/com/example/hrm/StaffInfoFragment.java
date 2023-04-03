@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hrm.Adapters.StaffInfoAdapter;
+import com.example.hrm.Response.Staff;
 import com.example.hrm.Response.StaffAttributes;
 import com.example.hrm.databinding.DepartmentItemBinding;
 import com.example.hrm.databinding.FragmentStaffInfoBinding;

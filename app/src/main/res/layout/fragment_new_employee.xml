@@ -428,7 +428,7 @@
                         android:text="@={NewEmployeeViewModel.address}"
                         android:id="@+id/txt_address"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/custom_edit_text_cut"
                         android:drawablePadding="12dp"

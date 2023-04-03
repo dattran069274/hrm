@@ -34,7 +34,7 @@ import retrofit2.Response;
  * Use the {@link LeaveFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LeaveFragment extends Fragment {
+public class LeaveFragment extends Fragment implements BaseFragment{
     public  static final String MY_TAG= "LeaveFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -180,5 +180,10 @@ public class LeaveFragment extends Fragment {
                 Log.d("onFailure",t.getMessage());
             }
         });
+    }
+
+    @Override
+    public String getTAG() {
+        return MY_TAG;
     }
 }

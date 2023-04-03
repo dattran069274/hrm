@@ -121,6 +121,22 @@ public class DepartmentFragment extends Fragment implements Toastable {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
+        if(getArguments()!=null){
+            try {
+                boolean isSuccess=getArguments().getBoolean("isSuccess");
+                if(isSuccess) {
+                    ((HomeActivity)getActivity()).showToast(true,"Create staff success!");
+                    Log.d("getArguments","isSuccess");
+                }
+                else {
+                    ((HomeActivity)getActivity()).showToast(false,"Create staff failed!");
+                    Log.d("getArguments","!isSuccess");
+                }
+            } catch (Exception e){
+
+            }
+
+        } else Log.d("getArguments","null");
         mView=inflater.inflate(R.layout.fragment_department, container, false);
         rcvDes=mView.findViewById(R.id.rcv_departments);
         btn_add=mView.findViewById(R.id.btn_add);
@@ -267,8 +283,8 @@ public class DepartmentFragment extends Fragment implements Toastable {
                                 Log.d("eeeeeeeestr",res.body().toString());
                                 DatumTemplate<Attributes> emp = gson.fromJson(object.get("data"), new TypeToken<DatumTemplate<Attributes>>() {}.getType());
                                 Attributes department=emp.getAttributes();
-                                desDepartments.add(department);
-                                departmentAdapter.notifyItemInserted(desDepartments.size()-1);
+                                desDepartments.add(0,department);
+                                departmentAdapter.notifyDataSetChanged();
                                 Log.d("eeeeeeee",emp.toString());
                                 alertDialog.dismiss();
                                 //Toast.makeText(getContext(), "Add department success!", Toast.LENGTH_SHORT).show();

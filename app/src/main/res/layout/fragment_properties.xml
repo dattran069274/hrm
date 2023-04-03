@@ -14,9 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
@@ -25,11 +23,11 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:id="@+id/btn_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/botron"
                     android:orientation="vertical"
@@ -38,6 +36,7 @@
                     android:paddingEnd="20dp">
 
                     <TextView
+                        android:textSize="@dimen/nomarlText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -47,19 +46,22 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:padding="10dp"
+                android:background="@color/blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
                 <TextView
+
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="STT"
                     android:textAlignment="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/nomarlText"></TextView>
 
                 <TextView
@@ -69,7 +71,7 @@
                     android:layout_weight="3"
                     android:text="Name"
                     android:textAlignment="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/nomarlText"></TextView>
                 <LinearLayout
                     android:layout_height="wrap_content"
@@ -82,9 +84,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="2"
-                        android:text="status"
+                        android:text="@string/Status"
                         android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/nomarlText"></TextView>
                 </LinearLayout>
 
@@ -98,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:text="View history"
                         android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/nomarlText"></TextView>
                 </LinearLayout>
 

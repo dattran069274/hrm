@@ -4,8 +4,32 @@ import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Generated("jsonschema2pojo")
-public class Staff {
+public class Staff implements Serializable {
+    @Override
+    public String toString() {
+        return "Staff{" +
+                "id=" + id +
+                ", fullname='" + fullname + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", gender='" + gender + '\'' +
+                ", status='" + status + '\'' +
+                ", positionId=" + positionId +
+                ", departmentId=" + departmentId +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", staffId=" + staffId +
+                ", email='" + email + '\'' +
+                ", passwordDigest='" + passwordDigest + '\'' +
+                ", deletedAt=" + deletedAt +
+                ", jobTitleId=" + jobTitleId +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", joinDate=" + joinDate +
+                '}';
+    }
 
     @SerializedName("id")
     @Expose
